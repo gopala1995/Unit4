@@ -1,4 +1,5 @@
 const express = require("express")
+const { path } = require("express/lib/application")
 
 const mongoose = require("mongoose")
 
@@ -33,7 +34,7 @@ const tagSchema = new mongoose.Schema({
 
 const Tag = mongoose.model("tag",tagSchema)
 
-//----post schema------
+//----post schema-----
 
 const postSchema = new mongoose.Schema({
     title:{type:String,required:true},
@@ -130,6 +131,17 @@ app.patch("/tags/:id",async(req,res)=>{
 app.delete("/tags/:id",async(req,res)=>{
     const tag = await Tag.findByIdAndDelete(req.params.id).lean().exec()
     return res.status(200).send(tag)
+})
+//----------------POST CRUD---------
+
+app.post("/posts",async(req,res)=>{
+    const post = await Post.create(req.body)
+    return res.status(200).send(post)
+})
+
+app.get("/posts",async(req,res)=>{
+    const posts = await Post.find().populate({path:"user_id",select:{name:1}}).lean().exec()
+    return res.status(200).send(posts)
 })
 
 app.listen(2345,async (req,res)=>{
