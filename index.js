@@ -63,19 +63,41 @@ const app = express()
 
 app.use(express.json())
 
-app.get("/",async (req,res)=>{
+app.get("/users",async (req,res)=>{
     const user = await User.find().lean().exec()
     return res.send(user)
 })
 
-app.post("/",async(req,res)=>{
+app.post("/users",async(req,res)=>{
     try{
         const user = await User.create(req.body)
         return res.status(201).send(user)
     }catch(err){
         console.log(err.message)
+        return res.status(500).send(err.message)
     }
     
+})
+
+app.get("/users/:id",async(req,res)=>{
+
+    const user = await User.findById(req.params.id).lean().exec()
+    return res.status(200).send(user)
+  
+})
+
+app.patch("/users/:id",async(req,res)=>{
+
+    const user = await User.findByIdAndUpdate(req.params.id,req.body,{new:true}).lean().exec()
+    return res.status(2001).send(user)
+  
+})
+
+app.delete("/users/:id",async(req,res)=>{
+
+    const user = await User.findByIdAndDelete(req.params.id,req.body).lean().exec()
+    return res.status(200).send(user)
+  
 })
 
 app.listen(2345,async (req,res)=>{
