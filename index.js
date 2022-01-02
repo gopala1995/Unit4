@@ -140,7 +140,7 @@ app.post("/posts",async(req,res)=>{
 })
 
 app.get("/posts",async(req,res)=>{
-    const posts = await Post.find().populate({path:"user_id",select:{name:1}}).lean().exec()
+    const posts = await Post.find().populate({path:"user_id",select:{movies_name:1}}).populate({path:"tag_ids",select:{name:1}}).lean().exec()
     return res.status(200).send(posts)
 })
 
