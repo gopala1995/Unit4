@@ -63,7 +63,7 @@ const Comment = mongoose.model("comment",commentSchema)
 const app = express()
 
 app.use(express.json())
-
+//------user-crud------
 app.get("/users",async (req,res)=>{
     const user = await User.find().lean().exec()
     return res.send(user)
@@ -100,7 +100,7 @@ app.delete("/users/:id",async(req,res)=>{
     return res.status(200).send(user)
   
 })
-
+//-----------Tag-crud-------
 app.post("/tags",async(req,res)=>{
     try{
         const tag = await Tag.create(req.body)
@@ -142,6 +142,48 @@ app.post("/posts",async(req,res)=>{
 app.get("/posts",async(req,res)=>{
     const posts = await Post.find().populate({path:"user_id",select:{movies_name:1}}).populate({path:"tag_ids",select:{name:1}}).lean().exec()
     return res.status(200).send(posts)
+})
+
+app.get("/posts/:id",async(req,res)=>{
+    const post = await Post.findById(req.params.id).populate({path:"user_id",select:{movies_name:1}}).populate({path:"tag_ids",select:{name:1}}).lean().exec()
+    return res.status(200).send(post)
+})
+
+app.patch("/posts/:id",async(req,res)=>{
+    const post = await Post.findByIdAndUpdate(req.params.id,req.body,{new:true}).lean().exec()
+    return res.status(200).send(post)
+})
+
+app.delete("/posts/:id",async(req,res)=>{
+    const post = await Post.findByIdAndDelete(req.params.id).lean().exec()
+    return res.status(200).send(post)
+})
+//
+//----------------comment CRUD---------
+
+app.post("/comment",async(req,res)=>{
+    const cmnt = await Comment.create(req.body)
+    return res.status(200).send(cmnt)
+})
+
+app.get("/comment",async(req,res)=>{
+    const comment = await Comment.find().populate({path:"user_id",select:{movies_name:1}}).populate({path:"tag_ids",select:{name:1}}).lean().exec()
+    return res.status(200).send(comment)
+})
+
+app.get("/comment/:id",async(req,res)=>{
+    const cmnt = await Comment.findById(req.params.id).populate({path:"user_id",select:{movies_name:1}}).populate({path:"tag_ids",select:{name:1}}).lean().exec()
+    return res.status(200).send(cmnt)
+})
+
+app.patch("/comment/:id",async(req,res)=>{
+    const cmnt = await Comment.findByIdAndUpdate(req.params.id,req.body,{new:true}).lean().exec()
+    return res.status(200).send(cmnt)
+})
+
+app.delete("/comment/:id",async(req,res)=>{
+    const cmnt = await Comment.findByIdAndDelete(req.params.id).lean().exec()
+    return res.status(200).send(cmnt)
 })
 
 app.listen(2345,async (req,res)=>{
