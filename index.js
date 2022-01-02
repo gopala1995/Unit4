@@ -25,7 +25,7 @@ const User = mongoose.model("user",userSche)
 
 //-----TagSchema------
 const tagSchema = new mongoose.Schema({
-    name:{type:String,required:true}
+    movies_name:{type:String,required:true}
 },{
     versionKey:false,
     timestamps:true
@@ -98,6 +98,38 @@ app.delete("/users/:id",async(req,res)=>{
     const user = await User.findByIdAndDelete(req.params.id,req.body).lean().exec()
     return res.status(200).send(user)
   
+})
+
+app.post("/tags",async(req,res)=>{
+    try{
+        const tag = await Tag.create(req.body)
+    return res.status(200).send(tag)
+    }catch(e){
+   console.log(e.message);
+    }
+})
+
+app.get("/tags",async(req,res)=>{
+    try{
+    const tags = await Tag.find().lean().exec()
+    return res.status(200).send(tags)
+    }catch(e){
+   console.log(e.message);
+    }
+})
+app.get("/tags/:id",async(req,res)=>{
+    const tag = await Tag.findById(req.params.id).lean().exec()
+    return res.status(200).send(tag)
+})
+
+app.patch("/tags/:id",async(req,res)=>{
+    const tag = await Tag.findByIdAndUpdate(req.params.id,req.body,{new:true}).lean().exec()
+    return res.status(200).send(tag)
+})
+
+app.delete("/tags/:id",async(req,res)=>{
+    const tag = await Tag.findByIdAndDelete(req.params.id).lean().exec()
+    return res.status(200).send(tag)
 })
 
 app.listen(2345,async (req,res)=>{
